@@ -1,12 +1,11 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-
-// import { Home } from 'pages';
+import { HomePageMF } from 'pages/HomePageMF';
 
 export const Routing = () => {
     return (
         <Routes>
-            {/*<Route path="/" element={<Home />} />*/}
+            <Route path="/" element={<HomePageMF />} />
         </Routes>
     );
 };

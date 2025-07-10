@@ -16,8 +16,11 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "paths": {
+            "app/*": ["app/*"],
             "pages/*": ["pages/*"],
-            "routing/*": ["routing/*"]
+            "routing/*": ["routing/*"],
+            "widgets/*": ["widgets/*"],
+            "shared/*": ["shared/*"]
         }
     },
     "exclude": ["node_modules", "dist"],

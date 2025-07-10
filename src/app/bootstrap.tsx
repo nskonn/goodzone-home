@@ -1,14 +1,17 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { App } from './App';
 
-import { Routing } from 'routing/routing';
+let root: ReturnType<typeof createRoot> | null = null;
 
-const container = document.getElementById('root');
+export function mount(container: Element) {
+    root = createRoot(container);
+    root.render(<App />);
+}
 
-if (container) {
-    const root = createRoot(container);
-    root.render(
-        <>Home</>
-    );
+export function unmount() {
+    if (root) {
+        root.unmount();
+        root = null;
+    }
 }

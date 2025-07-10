@@ -30,61 +30,78 @@ const createSharedConfig = (modules: string[]) => {
     }, {});
 };
 
-export default {
-    entry: './src/app/index.tsx',
-    mode: 'development',
-    devServer: {
-        port: 3001,
-        historyApiFallback: true,
-        static: path.join(__dirname, 'public'),
-        hot: true,
-    },
-    output: {
-        filename: '[name].[contenthash].js',
-        publicPath: 'auto',
-        clean: true,
-    },
-    module: {
-        rules: [
-            {
-                test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
-                type: 'asset/resource',
-            },
-            {
-                test: /\.[jt]sx?$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            '@babel/preset-env',
-                            '@babel/preset-react',
-                            '@babel/preset-typescript',
-                        ],
+export default (env: Record<string, string>) => {
+    const isDev = !!env.development;
+
+    return {
+        entry: isDev ? './src/app/index.tsx' : './src/app/bootstrap.tsx',
+        mode: 'development',
+        devServer: {
+            port: 3001,
+            historyApiFallback: true,
+            static: path.join(__dirname, 'dist'),
+            hot: true,
+        },
+        output: {
+            // filename: '[name].[contenthash].js',
+            publicPath: 'auto',
+            clean: true,
+        },
+        module: {
+            rules: [
+                // {
+                //     test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
+                //     type: 'asset/resource',
+                // },
+                {
+                    test: /\.[jt]sx?$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                '@babel/preset-env',
+                                '@babel/preset-react',
+                                '@babel/preset-typescript',
+                            ],
+                        },
                     },
                 },
-            },
-        ],
-    },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.jsx'],
-        alias: {
-            pages: path.resolve(__dirname, 'src/pages'),
-            routing: path.resolve(__dirname, 'src/routing'),
+            ],
         },
-    },
-    plugins: [
-        new webpack.container.ModuleFederationPlugin({
-            name: 'home',
-            filename: 'remoteEntry.js',
-            exposes: {
-                './HomePageMF': './src/pages/HomePageMF',
+        resolve: {
+            extensions: ['.tsx', '.ts', '.js', '.jsx'],
+            alias: {
+                pages: path.resolve(__dirname, 'src/pages'),
+                app: path.resolve(__dirname, 'src/app'),
+                routing: path.resolve(__dirname, 'src/routing'),
+                widgets: path.resolve(__dirname, 'src/widgets'),
+                shared: path.resolve(__dirname, 'src/shared'),
             },
-            shared: createSharedConfig(SHARED_MODULES),
-        }),
-        new HtmlWebpackPlugin({
-            template: './public/index.html',
-            filename: 'index.html',
-        }),
-    ],
+        },
+        plugins: [
+            new webpack.container.ModuleFederationPlugin({
+                name: 'home',
+                filename: 'remoteEntry.js',
+                // exposes: {
+                //     './HomePageMF': './src/pages/HomePageMF',
+                // },
+                shared: {
+                    ...createSharedConfig(SHARED_MODULES),
+                    react: {
+                        singleton: true,
+                        eager: false,
+                    },
+                    'react-dom': {
+                        singleton: true,
+                        eager: false,
+                    },
+                },
+            }),
+            new HtmlWebpackPlugin({
+                template: './public/index.html',
+                filename: 'index.html',
+            }),
+        ],
+    };
 };
