@@ -1,6 +1,12 @@
-import React from 'react'
+import React from 'react';
 
+import { Container } from 'shared/ui';
+import { Header } from 'widgets/header';
 
-export const HomePageMF = () => <>HomePageMF</>;
-
-export default HomePageMF;
+export const HomePageMF = () => {
+    return (
+        <Container>
+            <Header />
+        </Container>
+    );
+};
