@@ -16,16 +16,17 @@
   "main": "index.js",
   "scripts": {
     "start": "npx webpack serve --env development",
+    "remote": "npx webpack serve --env development LOCAL_START=true",
     "init": "npm install npm-run-all && run-s init:*",
     "build": "npx webpack --env production",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "checks": "run-s format lint build"
   },
   "dependencies": {
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "react-router-dom": "^7.6.2",
-    "styled-components": "^6.1.19"
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-router-dom": "7.6.2",
+    "styled-components": "6.1.19"
   },
   "devDependencies": {
     "cors": "^2.8.5",
