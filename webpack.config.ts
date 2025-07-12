@@ -32,10 +32,11 @@ const createSharedConfig = (modules: string[]) => {
 
 export default (env: Record<string, string>) => {
     const isDev = !!env.development;
+    const isLocalStart = env.LOCAL_START;
 
     return {
-        entry: isDev ? './src/app/index.tsx' : './src/app/bootstrap.tsx',
-        mode: 'development',
+        entry: isLocalStart ? './src/app/index.tsx' : './src/app/bootstrap.tsx',
+        mode: isDev ? 'development' : 'production',
         devServer: {
             port: 3001,
             historyApiFallback: true,
@@ -43,16 +44,16 @@ export default (env: Record<string, string>) => {
             hot: true,
         },
         output: {
-            // filename: '[name].[contenthash].js',
+            filename: '[name].[contenthash].js',
             publicPath: 'auto',
             clean: true,
         },
         module: {
             rules: [
-                // {
-                //     test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
-                //     type: 'asset/resource',
-                // },
+                {
+                    test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
+                    type: 'asset/resource',
+                },
                 {
                     test: /\.[jt]sx?$/,
                     exclude: /node_modules/,
@@ -72,8 +73,8 @@ export default (env: Record<string, string>) => {
         resolve: {
             extensions: ['.tsx', '.ts', '.js', '.jsx'],
             alias: {
-                pages: path.resolve(__dirname, 'src/pages'),
                 app: path.resolve(__dirname, 'src/app'),
+                pages: path.resolve(__dirname, 'src/pages'),
                 routing: path.resolve(__dirname, 'src/routing'),
                 widgets: path.resolve(__dirname, 'src/widgets'),
                 shared: path.resolve(__dirname, 'src/shared'),
@@ -83,20 +84,10 @@ export default (env: Record<string, string>) => {
             new webpack.container.ModuleFederationPlugin({
                 name: 'home',
                 filename: 'remoteEntry.js',
-                // exposes: {
-                //     './HomePageMF': './src/pages/HomePageMF',
-                // },
-                shared: {
-                    ...createSharedConfig(SHARED_MODULES),
-                    react: {
-                        singleton: true,
-                        eager: false,
-                    },
-                    'react-dom': {
-                        singleton: true,
-                        eager: false,
-                    },
+                exposes: {
+                    './HomePageModule': './src/pages/HomePageModule',
                 },
+                shared: isLocalStart ? {} : createSharedConfig(SHARED_MODULES),
             }),
             new HtmlWebpackPlugin({
                 template: './public/index.html',

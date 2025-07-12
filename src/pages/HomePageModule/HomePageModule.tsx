@@ -3,7 +3,7 @@ import React from 'react';
 import { Container } from 'shared/ui';
 import { Header } from 'widgets/header';
 
-export const HomePageMF = () => {
+export const HomePageModule = () => {
     return (
         <Container>
             <Header />

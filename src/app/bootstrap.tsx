@@ -2,16 +2,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 
-let root: ReturnType<typeof createRoot> | null = null;
+const container = document.getElementById('root');
 
-export function mount(container: Element) {
-    root = createRoot(container);
+if (container) {
+    const root = createRoot(container);
     root.render(<App />);
-}
-
-export function unmount() {
-    if (root) {
-        root.unmount();
-        root = null;
-    }
 }
